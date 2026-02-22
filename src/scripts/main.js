@@ -1,6 +1,16 @@
 'use strict';
 
-const listOfEmployees = [...document.querySelectorAll('li')];
+const targetHeading = [...document.querySelectorAll('h1')].find(
+  (h) => h.textContent === 'List of employees',
+);
+
+let targetList = targetHeading?.nextElementSibling;
+
+while (targetList && targetList.tagName !== 'UL') {
+  targetList = targetList.nextElementSibling;
+}
+
+const listOfEmployees = [...targetList?.querySelectorAll('li')];
 
 /**
 * @param {String} string
@@ -8,9 +18,7 @@ const listOfEmployees = [...document.querySelectorAll('li')];
 * @returns {Number}
 */
 function convertStringToNumber(string) {
-  const number = Number(string.slice(1).split(',').join(''));
-
-  return number;
+  return Number(string.slice(1).split(',').join(''));
 }
 
 /**
@@ -24,7 +32,7 @@ function sortList(list) {
         convertStringToNumber(person2.dataset.salary) -
         convertStringToNumber(person1.dataset.salary),
     )
-    .map((person) => person.parentNode.append(person));
+    .forEach((person) => targetList.append(person));
 }
 
 /**
@@ -34,11 +42,13 @@ function sortList(list) {
 function getEmployees(list) {
   return list.map((person) => ({
     name: person.innerText,
-    position: person.dataset.position,
+    position: convertStringToNumber(person.dataset.position),
     salary: person.dataset.salary,
-    age: person.dataset.age,
+    age: Number(person.dataset.age),
   }));
 }
 
 sortList(listOfEmployees);
-getEmployees(listOfEmployees);
+
+// eslint-disable-next-line no-unused-vars
+const jobs = getEmployees(listOfEmployees);
