@@ -10,7 +10,9 @@ while (targetList && targetList.tagName !== 'UL') {
   targetList = targetList.nextElementSibling;
 }
 
-const listOfEmployees = [...targetList?.querySelectorAll('li')];
+const listOfEmployees = targetList
+  ? [...targetList.querySelectorAll('li')]
+  : [];
 
 /**
 * @param {String} string
@@ -32,7 +34,7 @@ function sortList(list) {
         convertStringToNumber(person2.dataset.salary) -
         convertStringToNumber(person1.dataset.salary),
     )
-    .forEach((person) => targetList.append(person));
+    .forEach((person) => list[0]?.closest('ul').append(person));
 }
 
 /**
@@ -42,8 +44,8 @@ function sortList(list) {
 function getEmployees(list) {
   return list.map((person) => ({
     name: person.innerText,
-    position: convertStringToNumber(person.dataset.position),
-    salary: person.dataset.salary,
+    position: person.dataset.position,
+    salary: convertStringToNumber(person.dataset.salary),
     age: Number(person.dataset.age),
   }));
 }
